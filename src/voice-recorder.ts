@@ -103,7 +103,7 @@ export class VoiceRecorder {
      * @param minutes timeframe for the recording. X last minutes
      * @returns the path to the created file
      */
-    public async getRecordedVoice(guildId: string, exportType: AudioExportType = 'audio', minutes: number = 10): Promise<string | undefined> {
+    public async getRecordedVoice(guildId: string, fileName: string, exportType: AudioExportType = 'audio', minutes: number = 10): Promise<string | undefined> {
         if (!this.writeStreams[guildId]) {
             console.warn(`server with id ${guildId} does not have any streams`, 'Record voice');
             return;
@@ -116,7 +116,7 @@ export class VoiceRecorder {
             if (minStartTime) {
                 const {command, createdFiles} = await this.getFfmpegSpecs(this.writeStreams[guildId].userStreams, minStartTime, endTime, recordDurationMs);
                 if (createdFiles.length) {
-                    const resultPath = join(this.fileHelper.baseDir, `${endTime}.wav`);
+                    const resultPath = join(this.fileHelper.baseDir, `${fileName}.wav`);
                     command
                         .on('end', async () => {
                             let path;

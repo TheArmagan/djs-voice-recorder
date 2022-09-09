@@ -95,7 +95,7 @@ class VoiceRecorder {
      * @param minutes timeframe for the recording. X last minutes
      * @returns the path to the created file
      */
-    getRecordedVoice(guildId, exportType = 'audio', minutes = 10) {
+    getRecordedVoice(guildId, fileName, exportType = 'audio', minutes = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.writeStreams[guildId]) {
                 console.warn(`server with id ${guildId} does not have any streams`, 'Record voice');
@@ -108,7 +108,7 @@ class VoiceRecorder {
                 if (minStartTime) {
                     const { command, createdFiles } = yield this.getFfmpegSpecs(this.writeStreams[guildId].userStreams, minStartTime, endTime, recordDurationMs);
                     if (createdFiles.length) {
-                        const resultPath = (0, path_1.join)(this.fileHelper.baseDir, `${endTime}.wav`);
+                        const resultPath = (0, path_1.join)(this.fileHelper.baseDir, `${fileName}.wav`);
                         command
                             .on('end', () => __awaiter(this, void 0, void 0, function* () {
                             let path;
