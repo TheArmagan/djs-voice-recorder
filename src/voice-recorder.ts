@@ -114,7 +114,7 @@ export class VoiceRecorder {
             const minStartTime = this.getMinStartTime(guildId);
 
             if (minStartTime) {
-                const {command, createdFiles} = await this.getFfmpegSpecs(this.writeStreams[guildId].userStreams, minStartTime, endTime, recordDurationMs);
+                const {command, createdFiles} = await this.getFfmpegSpecs(this.writeStreams[guildId].userStreams, minStartTime, fileName, endTime, recordDurationMs);
                 if (createdFiles.length) {
                     const resultPath = join(this.fileHelper.baseDir, `${fileName}.wav`);
                     command
@@ -125,7 +125,7 @@ export class VoiceRecorder {
                                 await this.fileHelper.deleteFilesByPath(createdFiles);
                             } else {
                                 const files = [resultPath, ...createdFiles];
-                                path = await this.toOGG(files, endTime);
+                                path = await this.toOGG(files, fileName);
                                 await this.fileHelper.deleteFilesByPath(files);
                             }
                             resolve(path);
@@ -141,11 +141,11 @@ export class VoiceRecorder {
         });
     }
 
-    private toOGG(files: string[], endTime: number): Promise<string> {
+    private toOGG(files: string[], fileName: string): Promise<string> {
         return new Promise((resolve, reject) => {
             let options = ffmpeg();
             const outputOptions: string[] = [];
-            const filePath = join(this.fileHelper.baseDir, `${endTime}.ogg`);
+            const filePath = join(this.fileHelper.baseDir, `${fileName}.ogg`);
             for (let i = 0; i < files.length; ++i) {
                 options = options.addInput(files[i]);
                 outputOptions.push(`-map ${i}`);
@@ -172,7 +172,7 @@ export class VoiceRecorder {
         return minStartTime;
     }
 
-    private async getFfmpegSpecs(streams: UserStreams, minStartTime: number, endTime: number, recordDurationMs: number) {
+    private async getFfmpegSpecs(streams: UserStreams, minStartTime: number, fileName: string, endTime: number, recordDurationMs: number) {
         const maxRecordTime = endTime - recordDurationMs;
         const startRecordTime = Math.max(minStartTime, maxRecordTime);
 
@@ -183,7 +183,7 @@ export class VoiceRecorder {
 
         for (const userId in streams) {
             const stream = streams[userId].out;
-            const filePath = join(this.fileHelper.baseDir, `${endTime}-${userId}.wav`);
+            const filePath = join(this.fileHelper.baseDir, `${fileName}-${userId}.wav`);
             try {
                 await this.saveFile(stream, filePath, startRecordTime, endTime);
                 ffmpegOptions = ffmpegOptions.addInput(filePath);
