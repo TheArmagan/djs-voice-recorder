@@ -19,6 +19,8 @@ const path_1 = require("path");
 const file_helper_1 = require("./file-helper");
 const wav_1 = require("wav");
 const replay_readable_1 = require("./replay-readable");
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
+fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
 class VoiceRecorder {
     constructor(options = {}) {
         var _a, _b, _c, _d;

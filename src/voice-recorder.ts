@@ -6,6 +6,9 @@ import { FileHelper } from './file-helper';
 import { FileWriter } from 'wav';
 import { ReplayReadable } from './replay-readable';
 import { AudioExportType, RecordOptions } from '../models/types';
+import ffmpegStatic from 'ffmpeg-static';
+
+ffmpeg.setFfmpegPath(ffmpegStatic as string);
 
 interface UserStreams {
     [userId: string]: {
